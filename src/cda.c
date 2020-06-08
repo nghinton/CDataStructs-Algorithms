@@ -3,16 +3,6 @@
 #include <assert.h>
 #include "cda.h"
 
-struct CDA{
-
-	int front;
-	int back;
-	int size;
-	int capacity;
-	void **array;	
-
-};
-
 CDA *newCDA(void)
 {
 	CDA *p = malloc(sizeof(CDA));
@@ -51,8 +41,11 @@ void insertCDA(CDA *items,int index,void *value)
 	}
 	// Inserting at the front
 	if (index == 0) {
-		if (items->front == 0) {items->front = items->capacity-1;}
-		else {items->front--;}
+		if (items->front == 0) {
+			items->front = items->capacity-1;
+		} else {
+			items->front--;
+		}
 		items->array[items->front] = value;
 	}
 	// Inserting at the back
@@ -64,8 +57,11 @@ void insertCDA(CDA *items,int index,void *value)
 	else {
 		// Insert in front half
 		if (index < items->size/2) {
-			if (items->front == 0) {items->front = items->capacity-1;}
-			else {items->front--;}
+			if (items->front == 0) {
+				items->front = items->capacity-1;
+			} else {
+				items->front--;
+			}
 			for (int i=0; i<=index; i++) {
 				items->array[(items->front+i)%items->capacity] = 
 					items->array[(items->front+i+1)%items->capacity];
@@ -84,19 +80,16 @@ void insertCDA(CDA *items,int index,void *value)
 	}
 	//Increment size
 	items->size++;
-
 }
 
 void *removeCDA(CDA *items,int index)
 {
 	assert(items->size>0);
-	assert(0<=index);
-	assert(index<items->size);
+	assert(index >= 0 && index < items->size);
 	// Store value to be removed
 	void *removed = getCDA(items, index);
 	// Update size
 	items->size--;
-	
 	// Remove from front
 	if (index == 0) {
 		// Update front
@@ -121,7 +114,6 @@ void *removeCDA(CDA *items,int index)
 		}
 		// Remove from back half
 		else {
-		printf("Here\n");
 			for (int i=index; i<items->size; i++) {
 				items->array[(items->front+i)%items->capacity] = 
 					items->array[(items->front+i+1)%items->capacity];
@@ -131,9 +123,9 @@ void *removeCDA(CDA *items,int index)
 	}
 
 	// Check capacity to size ratio and update accordingly
-/*	if (items->size == 0) {items->capacity = 1; return removed;}
-	if (items->size*4 < items->capacity) {
-		printf("Here\n");
+	if (items->size == 0) {items->capacity = 1; return removed;}
+	if (items->size*4 <= items->capacity) {
+		//reallocate the array to its new size
 		void **temp = malloc(sizeof(void *)*items->size);
 		assert(temp != 0);
 		
@@ -146,11 +138,12 @@ void *removeCDA(CDA *items,int index)
 		items->array = realloc(temp, sizeof(void *)*(items->capacity/2));
 		assert(items->array != 0);
 
+		// update capacity, head and tail
 		items->capacity = items->capacity/2;
 		items->front = 0;
 		items->back = items->size-1;
 	}
-*/
+
 	// Return removed value
 	return removed;
 }
@@ -192,15 +185,12 @@ int sizeCDA(CDA *items)
 
 void freeCDA(CDA *items)
 {
-	if (items->size == 0) {
-		free(items->array);
-		free((CDA *) items);
-		return;
-	} else {
-		for (int i=0; i<items->size; ++i) {
-			free(items->array[(items->front+i)%items->capacity]);
+	if (items->size != 0) {
+		for (int i=0; i<items->size; i++) {
+			free(items->array[i]);
 		}
-		free(items->array);
-		free((CDA *) items);
 	}
+	free(items->array);
+	free((CDA *) items);
+	return;
 }

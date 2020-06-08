@@ -3,40 +3,44 @@
 #include <assert.h>
 
 static DA *da = NULL;
-char *tests[] = {"test1 data", "tests2 data", "test3 data"};
+
+#define NUM_TESTS 100
 
 char *test_newDA() 
 {
+    da = newDA();
+    mu_assert(da != NULL, "Failed to initialize da");
+    mu_assert(da->size == 0, "Size initialized incorrectly");
+    mu_assert(da->capacity == 1, "Capacity initialized incorrectly");
+    
     return NULL;
 }
 
-char *test_insertDA()
+char *test_insertDA_removeDA()
 {
-    return NULL;
-}
+    int i = 0;
+    for (i = 0; i < NUM_TESTS; i++) {
+        int *p = malloc(sizeof(int));
+        *p = i;
+        insertDAback(da, p);
+    }
+    mu_assert(sizeDA(da) == NUM_TESTS, "Wrong size after inserting");
+    mu_assert(da->capacity == 128, "Wrong capacity after insertion");
 
-char *test_removeDA()
-{
-    return NULL;
-}
+    for (i = 0; i < NUM_TESTS; i++) {
+        int *t = removeDA(da, 0);
+        mu_assert(*t == i, "Wrong value removed");
+    }
+    mu_assert(sizeDA(da) == 0, "Wrong size after removal");
+    mu_assert(da->capacity == 1, "Wrong capacity after removal");
 
-char *test_getDA()
-{
-    return NULL;
-}
-
-char *test_setDA()
-{
-    return NULL;
-}
-
-char *test_sizeDA()
-{
     return NULL;
 }
 
 char *test_freeDA()
 {
+    freeDA(da);
+
     return NULL;
 }
 
@@ -45,11 +49,7 @@ char *all_tests()
     mu_suite_start();
 
     mu_run_test(test_newDA);
-    mu_run_test(test_insertDA);
-    mu_run_test(test_removeDA);
-    mu_run_test(test_getDA);
-    mu_run_test(test_setDA);
-    mu_run_test(test_sizeDA);
+    mu_run_test(test_insertDA_removeDA);
     mu_run_test(test_freeDA);    
 
     return NULL;

@@ -3,7 +3,13 @@
 
 #include <stdio.h>
 
-typedef struct CDA CDA;
+typedef struct CDA{
+	int front;
+	int back;
+	int size;
+	int capacity;
+	void **array;	
+} CDA;
 
 extern CDA	*newCDA(void);
 extern void	insertCDA(CDA *items,int index,void *value);

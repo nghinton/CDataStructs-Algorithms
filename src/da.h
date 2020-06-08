@@ -3,7 +3,13 @@
 
 #include <stdio.h>
 
-typedef struct DA DA;
+typedef struct DA{
+
+	int size;
+	int capacity;
+	void **array;
+
+} DA;
 
 extern DA	*newDA(void);
 extern void	insertDA(DA *items,int index,void *value);

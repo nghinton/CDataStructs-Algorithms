@@ -3,14 +3,6 @@
 #include <assert.h>
 #include "da.h"
 
-struct DA{
-
-	int size;
-	int capacity;
-	void **array;
-
-};
-
 DA *
 newDA(void)
 	{
@@ -35,7 +27,9 @@ void insertDA(DA *items,int index,void *value)
 		items->capacity = items->capacity*2;
 	}
 	// Insert at back
-	if (index == items->size) { items->array[items->size] = value;}
+	if (index == items->size) { 
+		items->array[items->size] = value;
+	}
 	// Insert at front or middle
 	else {
 		for (int i=items->size; i>index; --i) {
@@ -51,6 +45,7 @@ void insertDA(DA *items,int index,void *value)
 void *removeDA(DA *items,int index)
 {
 	assert(items->size>0);
+	assert(index >= 0 && index < items->size);
 	// Store value to be removed
 	void *removed = items->array[index];
 	// Update size
@@ -63,7 +58,11 @@ void *removeDA(DA *items,int index)
 
 	// Check capacity to size ratio and update accordingly
 	if (items->size == 0) {items->capacity = 1; return removed;}
-	if (items->size*4 <items->capacity) {
+	if (items->size*4 <= items->capacity) {
+		// reallocate the array to its new size
+		items->array = realloc(items->array, sizeof(void *)*(items->capacity));
+		assert(items->array != 0);
+		// update capacity
 		items->capacity = items->capacity/2;
 	}
 
@@ -106,15 +105,12 @@ sizeDA(DA *items)
 
 void freeDA(DA *items)
 {
-	if (items->size == 0) {
-		free(items->array);
-		free((DA *) items);
-		return;
-	} else {
-		for(int i=0; i<sizeDA(items);++i) {
+	if (items->size != 0) {
+		for (int i=0; i<items->size; i++) {
 			free(items->array[i]);
 		}
-		free(items->array);
-		free((DA *) items);
 	}
+	free(items->array);
+	free((DA *) items);
+	return;
 }
