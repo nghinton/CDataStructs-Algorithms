@@ -23,18 +23,19 @@ void insertCDA(CDA *items,int index,void *value)
 {
 	// If full then double the array
 	if (items->size == items->capacity) {
-		void **temp = malloc(sizeof(void *)*items->size);
-		assert(temp != 0);
-		
+		// Create a new array of the approporaite size
+		void **newArray = malloc(sizeof(void *)*items->capacity*2);
+		assert(newArray != 0);
+		// Copy over values into the new array
 		for (int i=0; i<items->size; ++i) {
-			temp[i] = items->array[(items->front+i)%items->capacity];
+			newArray[i] = getCDA(items, i);
 		}
-		
+		// Free the old array
 		free(items->array);
-
-		items->array = realloc(temp, sizeof(void *)*(items->capacity*2));
+		// Assign to the new array
+		items->array = newArray;
 		assert(items->array != 0);
-
+		// Reset cda values
 		items->capacity = items->capacity*2;
 		items->front = 0;
 		items->back = items->size-1;
@@ -125,20 +126,19 @@ void *removeCDA(CDA *items,int index)
 	// Check capacity to size ratio and update accordingly
 	if (items->size == 0) {items->capacity = 1; return removed;}
 	if (items->size*4 <= items->capacity) {
-		//reallocate the array to its new size
-		void **temp = malloc(sizeof(void *)*items->size);
-		assert(temp != 0);
-		
+		// Create a new array of the approporaite size
+		void **newArray = malloc(sizeof(void *)*items->capacity/2);
+		assert(newArray != 0);
+		// Copy over values into the new array
 		for (int i=0; i<items->size; ++i) {
-			temp[i] = items->array[(items->front+i)%items->capacity];
+			newArray[i] = getCDA(items, i);
 		}
-		
+		// Free the old array
 		free(items->array);
-
-		items->array = realloc(temp, sizeof(void *)*(items->capacity/2));
+		// Assign to the new array
+		items->array = newArray;
 		assert(items->array != 0);
-
-		// update capacity, head and tail
+		// Reset cda values
 		items->capacity = items->capacity/2;
 		items->front = 0;
 		items->back = items->size-1;
