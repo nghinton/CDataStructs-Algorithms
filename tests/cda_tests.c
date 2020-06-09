@@ -34,7 +34,7 @@ char *test_insertCDA_removeCDA()
         mu_assert(*t == i, "Wrong value removed");
     }
     mu_assert(sizeCDA(cda) == 0, "Wrong size after removal");
-    mu_assert(cda->capacity == 1, "Wrongn capacity after removal");
+    mu_assert(cda->capacity == 1, "Wrong capacity after removal");
 
     return NULL;
 }
