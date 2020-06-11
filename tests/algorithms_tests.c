@@ -1,11 +1,11 @@
 #include "minunit.h"
-#include <sorts.h>
+#include <algorithms.h>
 #include <string.h>
 
 int test_cmp_int(int *a, int *b) 
 {
     if (*a < *b) return -1;
-    if (*a == *b) return 0; 
+    if (*a == *b) return 0;
     else return 1;
 }
 
@@ -30,9 +30,7 @@ int is_sorted_int(DA *array)
         if ( *a > *b) {
             return 0;
         }
-
     }
-
     return 1;
 }
 
@@ -69,6 +67,16 @@ char *test_heapsort()
     return run_sort_test(DA_heapsort, "heapsort");
 }
 
+char *test_insertionsort()
+{
+    return run_sort_test(DA_insertionsort, "insertionsort");
+}
+
+char *test_radixsort() 
+{
+    return run_sort_test(DA_radixsort, "radixsort");
+}
+
 char *all_tests()
 {
     mu_suite_start();
@@ -76,6 +84,8 @@ char *all_tests()
     mu_run_test(test_qsort);
     mu_run_test(test_mergesort);
     mu_run_test(test_heapsort);
+    mu_run_test(test_insertionsort); 
+    mu_run_test(test_radixsort);
 
     return NULL;
 }

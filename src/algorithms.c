@@ -1,4 +1,4 @@
-#include "sorts.h"
+#include "algorithms.h"
 #include "da.h"
 #include <stdlib.h>
 
@@ -167,5 +167,89 @@ void heapSort(void **array, int size, DA_compare cmp)
 int DA_heapsort(DA *items, DA_compare cmp)
 {
     heapSort(items->array, sizeDA(items), cmp);
+    return 0;
+}
+
+int DA_insertionsort(DA *items, DA_compare cmp)
+{
+    void **array = items->array;
+    int size = sizeDA(items);
+
+    int j;
+    void *key; 
+    for (int i=1; i < size; i++) { 
+        key = array[i]; 
+        j = i - 1; 
+  
+        // Move values greater than key down the array
+        while (j >= 0 && cmp(array[j], key) > 0) { 
+            array[j + 1] = array[j]; 
+            j = j - 1; 
+        } 
+        array[j + 1] = key; 
+    }
+
+    return 0;
+}
+
+// A utility function to get maximum value in arr[] 
+int getMax(void **array, int size) 
+{ 
+    int max = *(int *)array[0]; 
+    for (int i = 1; i < size; i++) {
+        if ( *(int *) array[i] > max ) { 
+            max = *(int *) array[i]; 
+        }
+    }
+    return max; 
+} 
+
+void countSort(void **array, int size, int exp) 
+{ 
+    // Create output array
+    void **output = malloc(sizeof(void *) * size); 
+
+    int count[10] = {0}; 
+  
+    // Store count of occurrences in count[] 
+    for (int i=0; i < size; i++) 
+        count[ ((*(int *)array[i])/exp)%10 ]++; 
+  
+    // Change count[i] so that count[i] now contains actual 
+    //  position of this digit in output[] 
+    for (int i=1; i < 10; i++) 
+        count[i] += count[i - 1]; 
+  
+    // Build the output array 
+    for (int i=size-1; i >= 0; i--) 
+    { 
+        output[count[ ((*(int *)array[i])/exp)%10 ] - 1] = array[i]; 
+        count[ ((*(int *)array[i])/exp)%10 ]--; 
+    } 
+  
+    // Copy the output array to arr[], so that arr[] now 
+    // contains sorted numbers according to current digit 
+    for (int i=0; i < size; i++) 
+        array[i] = output[i]; 
+
+    // Free ouput array
+    free(output);
+} 
+
+int DA_radixsort(DA *items, DA_compare cmp)
+{
+    void **array = items->array;
+    int size = sizeDA(items);
+
+    // Find the maximum number to know number of digits 
+    int max = 9; //getMax(array, size); 
+  
+    // Do counting sort for every digit. Note that instead 
+    // of passing digit number, exp is passed. exp is 10^i 
+    // where i is current digit number 
+    for (int exp = 1; max/exp > 0; exp *= 10) { 
+        countSort(array, size, exp); 
+    }
+
     return 0;
 }
