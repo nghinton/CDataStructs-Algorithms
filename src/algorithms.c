@@ -238,6 +238,8 @@ void countSort(void **array, int size, int exp)
 
 int DA_radixsort(DA *items, DA_compare cmp)
 {
+    (void) cmp;
+
     void **array = items->array;
     int size = sizeDA(items);
 
